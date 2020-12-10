@@ -123,6 +123,12 @@ import javax.net.ssl.TrustManagerFactory;
                         type = {DataType.INT},
                         optional = true, defaultValue = "1"),
                 @Parameter(
+                        name = "connection.autorecover",
+                        description = "This determines whether the connection should automatically recover from IO " +
+                                "Exceptions. If false, the connection will close upon IO Exceptions.",
+                        type = {DataType.BOOL},
+                        optional = true, defaultValue = "true"),
+                @Parameter(
                         name = "content.type",
                         description = "The message content type. This should be the `MIME` content type.",
                         type = {DataType.STRING},
@@ -274,6 +280,7 @@ public class RabbitMQSink extends Sink {
     private Option routingKeyOption;
     private Option headerOption;
     private int deliveryMode;
+    private boolean autoRecover = true;
     private Option exchangeAutoDeleteAsStringOption;
     private String contentType;
     private String contentEncoding;
@@ -326,6 +333,9 @@ public class RabbitMQSink extends Sink {
         this.deliveryMode = Integer.parseInt(optionHolder.validateAndGetStaticValue
                 (RabbitMQConstants.RABBITMQ_DELIVERY_MODE,
                         RabbitMQConstants.DEFAULT_DELIVERY_MODE));
+        this.autoRecover = Boolean.parseBoolean(optionHolder.validateAndGetStaticValue
+                (RabbitMQConstants.RABBITMQ_CONNECTION_AUTORECOVER,
+                        RabbitMQConstants.DEFAULT_CONNECTION_AUTORECOVER));
         this.contentType = optionHolder.validateAndGetStaticValue(RabbitMQConstants.RABBITMQ_CONTENT_TYPE,
                 RabbitMQConstants.NULL);
         this.contentEncoding = optionHolder.validateAndGetStaticValue(RabbitMQConstants.RABBITMQ_CONTENT_ENCODING,
@@ -376,6 +386,10 @@ public class RabbitMQSink extends Sink {
             URI uri = URI.create(publisherURI);
             factory.setUri(uri);
             factory.setRequestedHeartbeat(heartbeat);
+            if (this.autoRecover) {
+                log.info("Setting Automatic Recovery");
+                factory.setAutomaticRecoveryEnabled(true);
+            }
 
             if (tlsEnabled) {
                 //TODO default truststore location should be defined as wso2 truststore location.

@@ -44,6 +44,7 @@ public class RabbitMQConstants {
     public static final String RABBITMQ_CONNECTION_TLS_TRUSTSTORE_PASSWORD = "tls.truststore.password";
     public static final String TRUSTSTORE_PASSWORD_VALUE = "wso2carbon";
     public static final String RABBITMQ_DELIVERY_MODE = "delivery.mode";
+    public static final String RABBITMQ_CONNECTION_AUTORECOVER = "connection.autorecover";
     public static final String RABBITMQ_CONTENT_TYPE = "content.type";
     public static final String RABBITMQ_CONTENT_ENCODING = "content.encoding";
     public static final String RABBITMQ_PRIORITY = "priority";
@@ -83,4 +84,5 @@ public class RabbitMQConstants {
     public static final String DEFAULT_QUEUE_EXCLUSIVE = "false";
     public static final String DEFAULT_AUTO_ACK = "true";
     public static final String DEFAULT_CONSUMER_THREADPOOL_SIZE = "1";
+    public static final String DEFAULT_CONNECTION_AUTORECOVER = "true";
 }
